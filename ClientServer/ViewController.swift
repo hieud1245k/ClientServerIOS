@@ -8,6 +8,7 @@
 import UIKit
 import Network
 
+private var count = 0
 
 class ViewController: UIViewController {
     @IBOutlet weak var lbAddress: UITextField!
@@ -23,7 +24,6 @@ class ViewController: UIViewController {
     
     private var isStartServerSuccess = false
     private var isConnectToServerSuccess = false
-    private var count = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,43 +32,90 @@ class ViewController: UIViewController {
     }
 
     @IBAction func connectToServer(_ sender: Any) {
-        if (client == nil) {
-            let address: String = lbAddress.text ?? ""
-            let port: Int32 = Int32(lbPort.text ?? "") ?? 8080
-            self.client = Client(address, port, lbMessage: self.lbMessage)
+        if (server != nil) {
+            print("Stop server")
             DispatchQueue.global(qos: .background).async {
-                self.client?.start()
+                self.server?.stop()
+                DispatchQueue.main.async {
+                    self.reset()
+                }
             }
-        } else {
+            return
+        }
+        if (client != nil) {
             DispatchQueue.global(qos: .background).async {
-                self.count += 1
-                self.client?.connection.send(data: Data("From IOS client: \(self.count)".utf8))
+                self.client?.stop()
+                DispatchQueue.main.async {
+                    self.reset()
+                }
             }
+            return
+        }
+        let address: String = lbAddress.text ?? ""
+        let port: Int32 = Int32(lbPort.text ?? "") ?? 8080
+        self.client = Client(address, port, lbMessage: self.lbMessage)
+        DispatchQueue.global(qos: .background).async {
+            self.client?.connection.onConnectionStateCallback = { state in
+                DispatchQueue.main.async {
+                    if state == .ready {
+                        self.lbStatus.text = "Connect to server success"
+                        self.btConnect.setTitle("Stop connect to server", for: .normal)
+                        self.btStart.setTitle("Send to server", for: .normal)
+                    } else {
+                        self.reset()
+                        self.lbStatus.text = "Connect to server failed"
+                    }
+                }
+            }
+            self.client?.onStopCallBack = {
+                DispatchQueue.main.async {
+                    self.reset()
+                    self.lbStatus.text = "Server disconnect"
+                }
+            }
+            self.client?.start()
         }
     }
     
     @IBAction func startServer(_ sender: Any) {
-        if (server == nil || !isStartServerSuccess) {
+        if (client != nil) {
             DispatchQueue.global(qos: .background).async {
-                do {
-                    self.server = Server(self.lbMessage)
-                    try self.server?.start()
-                    self.isStartServerSuccess = true
-                    DispatchQueue.main.async {
-                        self.btConnect.isEnabled = false
-                        self.btStart.setTitle("Send to client", for: .normal)
-                        self.lbStatus.text = "Start server successful"
-                    }
-                } catch {
-                    self.isStartServerSuccess = false
-                    DispatchQueue.main.async {
-                        self.lbStatus.text = "Start server failed"
-                    }
+                count += 1
+                self.client?.connection.send(data: Data("From IOS client: \(count)".utf8))
+            }
+            return
+        }
+        if (server != nil) {
+            server?.heartbeat()
+            return
+        }
+        DispatchQueue.global(qos: .background).async {
+            do {
+                self.server = Server(self.lbMessage)
+                try self.server?.start()
+                self.isStartServerSuccess = true
+                DispatchQueue.main.async {
+                    self.btConnect.setTitle("Stop server", for: .normal)
+                    self.btStart.setTitle("Send to client", for: .normal)
+                    self.lbStatus.text = "Start server successful"
+                }
+            } catch {
+                self.server = nil
+                self.isStartServerSuccess = false
+                DispatchQueue.main.async {
+                    self.lbStatus.text = "Start server failed"
                 }
             }
-        } else {
-            server?.heartbeat()
         }
+    }
+    
+    private func reset() {
+        client = nil
+        server = nil
+        btConnect.setTitle("Connect to server", for: .normal)
+        btStart.setTitle("Start server", for: .normal)
+        lbStatus.text = "Waiting a connection..."
+        lbMessage.text = ""
     }
 }
 
@@ -88,6 +135,7 @@ class Connection {
     let id: Int
 
     var didStopCallback: ((Error?) -> Void)? = nil
+    var onConnectionStateCallback: ((NWConnection.State) -> Void) = { _ in }
 
     func start() {
         print("connection \(self.id) will start")
@@ -108,9 +156,11 @@ class Connection {
 
     func stop() {
         print("connection \(self.id) will stop")
+        nwConnection.cancel()
     }
 
     private func stateDidChange(to state: NWConnection.State) {
+        print("stateDidChange \(state)")
         switch state {
         case .setup:
             break
@@ -120,8 +170,10 @@ class Connection {
             break
         case .ready:
             print("connection \(self.id) ready")
+            onConnectionStateCallback(state)
         case .failed(let error):
             self.connectionDidFail(error: error)
+            onConnectionStateCallback(state)
         case .cancelled:
             break
         default:
@@ -130,8 +182,7 @@ class Connection {
     }
 
     private func connectionDidFail(error: Error) {
-        print("connection \(self.id) did fail, error: \(error)")
-        self.stop(error: error)
+        print("connection \(self.id) did failed, error: \(error)")
     }
 
     private func connectionDidEnd() {
@@ -139,12 +190,14 @@ class Connection {
         self.stop(error: nil)
     }
 
-    private func stop(error: Error?) {
+    func stop(error: Error?, fromServer: Bool = true) {
         self.nwConnection.stateUpdateHandler = nil
         self.nwConnection.cancel()
         if let didStopCallback = self.didStopCallback {
             self.didStopCallback = nil
-            didStopCallback(error)
+            if fromServer {
+                didStopCallback(error)
+            }
         }
     }
 
@@ -170,6 +223,8 @@ class Connection {
 }
 
 class Client {
+    
+    var onStopCallBack: (() -> Void) = {}
 
     init(_ host: String, _ ip: Int32, lbMessage: UILabel) {
         let nwConnection = NWConnection(host: .init(host), port: .init(integerLiteral: UInt16(ip)), using: .tcp)
@@ -182,13 +237,14 @@ class Client {
         self.connection.didStopCallback = self.didStopCallback(error:)
         self.connection.start()
     }
+    
+    func stop() {
+        self.connection.stop(error: nil, fromServer: false)
+    }
 
     func didStopCallback(error: Error?) {
-        if error == nil {
-            exit(EXIT_SUCCESS)
-        } else {
-            exit(EXIT_FAILURE)
-        }
+        print("didStopCallback")
+        onStopCallBack()
     }
 
 //    static func run() {
@@ -201,12 +257,10 @@ class Server {
 
     init(_ lbMessage: UILabel? = nil) {
         self.listener = try! NWListener(using: .tcp, on: 8080)
-        self.timer = DispatchSource.makeTimerSource(queue: .main)
         self.lbMessage = lbMessage
     }
 
     let listener: NWListener
-    let timer: DispatchSourceTimer
     let lbMessage: UILabel?
 
     func start() throws {
@@ -214,10 +268,6 @@ class Server {
         self.listener.stateUpdateHandler = self.stateDidChange(to:)
         self.listener.newConnectionHandler = self.didAccept(nwConnection:)
         self.listener.start(queue: .main)
-    
-        self.timer.setEventHandler(handler: self.heartbeat)
-        self.timer.schedule(deadline: .now() + 5.0, repeating: 5.0)
-        self.timer.activate()
     }
 
     func stateDidChange(to newState: NWListener.State) {
@@ -256,9 +306,12 @@ class Server {
     private func connectionDidStop(_ connection: Connection) {
         self.connectionsByID.removeValue(forKey: connection.id)
         print("server did close connection \(connection.id)")
+        DispatchQueue.main.async {
+            self.lbMessage?.text = "server disconnect with \(connection.id)\n\(self.lbMessage?.text ?? "")"
+        }
     }
 
-    private func stop() {
+    func stop() {
         self.listener.stateUpdateHandler = nil
         self.listener.newConnectionHandler = nil
         self.listener.cancel()
@@ -267,14 +320,13 @@ class Server {
             connection.stop()
         }
         self.connectionsByID.removeAll()
-        self.timer.cancel()
     }
 
     func heartbeat() {
-        let timestamp = Date()
-        print("server heartbeat, timestamp: \(timestamp)")
+        count += 1
+        let data = "From ios server: \(count)"
+        print(data)
         for connection in self.connectionsByID.values {
-            let data = "heartbeat, connection: \(connection.id), timestamp: \(timestamp)\r\n"
             connection.send(data: Data(data.utf8))
         }
     }
