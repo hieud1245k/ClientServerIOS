@@ -28,6 +28,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         lbMessage.numberOfLines = 1000
+        lbStatus.numberOfLines = 1000
         // Do any additional setup after loading the view.
     }
 
@@ -97,13 +98,30 @@ class ViewController: UIViewController {
         DispatchQueue.global(qos: .background).async {
             do {
                 self.server = Server(self.lbMessage)
-                try self.server?.start()
-                self.isStartServerSuccess = true
-                DispatchQueue.main.async {
-                    self.btConnect.setTitle("Stop server", for: .normal)
-                    self.btStart.setTitle("Send to client", for: .normal)
-                    self.lbStatus.text = "Start server successful"
+                self.server?.onStateDidChange = { state in
+                    DispatchQueue.main.async {
+                        switch state {
+                        case .setup:
+                            break
+                        case .waiting:
+                            self.lbStatus.text = "Waiting start server..."
+                            break
+                        case .ready:
+                            self.isStartServerSuccess = true
+                            self.btConnect.setTitle("Stop server", for: .normal)
+                            self.btStart.setTitle("Send to client", for: .normal)
+                            self.lbStatus.text = "Start server successful"
+                            break
+                        case .failed(let error):
+                            self.lbStatus.text = "Start server failed due to: \(error.localizedDescription)"
+                        case .cancelled:
+                            break
+                        default:
+                            break
+                        }
+                    }
                 }
+                try self.server?.start()
             } catch {
                 self.server = nil
                 self.isStartServerSuccess = false
@@ -165,7 +183,7 @@ class Connection {
     }
 
     private func stateDidChange(to state: NWConnection.State) {
-        print("stateDidChange \(state)")
+        print("Connection stateDidChange \(state)")
         switch state {
         case .setup:
             break
@@ -267,6 +285,8 @@ class Server {
 
     let listener: NWListener
     let lbMessage: UILabel?
+    
+    var onStateDidChange: ((NWListener.State) -> Void) = {_ in }
 
     func start() throws {
         print("server will start")
@@ -276,6 +296,7 @@ class Server {
     }
 
     func stateDidChange(to newState: NWListener.State) {
+        onStateDidChange(newState)
         switch newState {
         case .setup:
             break
@@ -329,6 +350,9 @@ class Server {
     }
 
     func heartbeat() {
+        if (listener.state != .ready) {
+            return
+        }
         count += 1
         let data = "From ios server: \(count)"
         print(data)
