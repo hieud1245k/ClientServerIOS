@@ -43,6 +43,7 @@ class ViewController: UIViewController {
             return
         }
         if (client != nil) {
+            print("Stop client")
             DispatchQueue.global(qos: .background).async {
                 self.client?.stop()
                 DispatchQueue.main.async {
@@ -51,6 +52,7 @@ class ViewController: UIViewController {
             }
             return
         }
+        print("Connecting to server...")
         let address: String = lbAddress.text ?? ""
         let port: Int32 = Int32(lbPort.text ?? "") ?? 8080
         self.client = Client(address, port, lbMessage: self.lbMessage)
@@ -79,6 +81,7 @@ class ViewController: UIViewController {
     
     @IBAction func startServer(_ sender: Any) {
         if (client != nil) {
+            print("Send data from client")
             DispatchQueue.global(qos: .background).async {
                 count += 1
                 self.client?.connection.send(data: Data("From IOS client: \(count)".utf8))
@@ -86,9 +89,11 @@ class ViewController: UIViewController {
             return
         }
         if (server != nil) {
+            print("Send data from server")
             server?.heartbeat()
             return
         }
+        print("Starting server...")
         DispatchQueue.global(qos: .background).async {
             do {
                 self.server = Server(self.lbMessage)
@@ -312,6 +317,7 @@ class Server {
     }
 
     func stop() {
+        print("server will stop")
         self.listener.stateUpdateHandler = nil
         self.listener.newConnectionHandler = nil
         self.listener.cancel()
