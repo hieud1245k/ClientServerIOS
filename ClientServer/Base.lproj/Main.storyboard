@@ -13,7 +13,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="ClientServer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="mainVC" id="BYZ-38-t0r" customClass="ViewController" customModule="ClientServer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ny4-4Y-dcF">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -73,6 +73,17 @@
                                 <color key="textColor" red="1" green="0.31867167320000001" blue="0.29820024589999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rtp-63-8Vt">
+                                <rect key="frame" x="128.66666666666669" y="746" width="135.66666666666669" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Jk0-qS-N2H"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Open QR code"/>
+                                <connections>
+                                    <action selector="openQRCode:" destination="BYZ-38-t0r" eventType="touchUpInside" id="nTH-23-FDd"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="35c-gc-sUl"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -80,9 +91,11 @@
                             <constraint firstItem="oQh-0w-ysc" firstAttribute="leading" secondItem="35c-gc-sUl" secondAttribute="leading" constant="32" id="02S-ez-hRU"/>
                             <constraint firstItem="kCc-qx-Cxv" firstAttribute="leading" secondItem="35c-gc-sUl" secondAttribute="leading" constant="32" id="8CC-yD-sCL"/>
                             <constraint firstItem="dJJ-5P-eme" firstAttribute="top" secondItem="oQh-0w-ysc" secondAttribute="bottom" constant="24" id="9pn-SL-hFx"/>
+                            <constraint firstItem="35c-gc-sUl" firstAttribute="bottom" secondItem="rtp-63-8Vt" secondAttribute="bottom" constant="32" id="I1w-mS-bWs"/>
                             <constraint firstItem="35c-gc-sUl" firstAttribute="trailing" secondItem="WoD-zy-aUt" secondAttribute="trailing" constant="32" id="Jd2-CW-jJK"/>
                             <constraint firstItem="35c-gc-sUl" firstAttribute="trailing" secondItem="pVS-00-YxZ" secondAttribute="trailing" constant="32" id="LgY-18-H1n"/>
                             <constraint firstItem="pVS-00-YxZ" firstAttribute="leading" secondItem="35c-gc-sUl" secondAttribute="leading" constant="32" id="PuZ-WE-7sH"/>
+                            <constraint firstItem="rtp-63-8Vt" firstAttribute="centerX" secondItem="ny4-4Y-dcF" secondAttribute="centerX" id="Rho-6U-1r7"/>
                             <constraint firstItem="dJJ-5P-eme" firstAttribute="leading" secondItem="35c-gc-sUl" secondAttribute="leading" constant="32" id="Vpn-Um-XOn"/>
                             <constraint firstItem="oQh-0w-ysc" firstAttribute="top" secondItem="35c-gc-sUl" secondAttribute="top" constant="64" id="WQ1-RJ-6JN"/>
                             <constraint firstItem="kCc-qx-Cxv" firstAttribute="top" secondItem="pVS-00-YxZ" secondAttribute="bottom" constant="28" id="cRe-X5-Hyl"/>
@@ -96,6 +109,7 @@
                     </view>
                     <connections>
                         <outlet property="btConnect" destination="dJJ-5P-eme" id="zGW-cC-pK2"/>
+                        <outlet property="btQRCode" destination="rtp-63-8Vt" id="fYp-D6-a18"/>
                         <outlet property="btStart" destination="WoD-zy-aUt" id="dnO-9O-riP"/>
                         <outlet property="lbAddress" destination="PVf-S1-WQM" id="oxk-iU-6OU"/>
                         <outlet property="lbMessage" destination="kCc-qx-Cxv" id="RKy-KS-5Q1"/>
@@ -116,10 +130,10 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemGreenColor">
-            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.20392156859999999" green="0.78039215689999997" blue="0.34901960780000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemMintColor">
-            <color red="0.0" green="0.7803921568627451" blue="0.74509803921568629" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.78039215689999997" blue="0.74509803919999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

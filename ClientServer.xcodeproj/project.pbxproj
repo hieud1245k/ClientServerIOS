@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		02FAB7D0792934884199714D /* Pods_ClientServer_ClientServerUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D337912E87BECB0822EC180B /* Pods_ClientServer_ClientServerUITests.framework */; };
+		040221842B11965F008846E2 /* ScanQRViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 040221822B11965F008846E2 /* ScanQRViewController.swift */; };
+		040221852B11965F008846E2 /* ScanQRViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 040221832B11965F008846E2 /* ScanQRViewController.xib */; };
+		0402218B2B11F09A008846E2 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0402218A2B11F09A008846E2 /* Connection.swift */; };
+		0402218D2B11F0E0008846E2 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0402218C2B11F0E0008846E2 /* Client.swift */; };
+		0402218F2B11F110008846E2 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0402218E2B11F110008846E2 /* Server.swift */; };
+		042B71982B10D86800D784BE /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042B71972B10D86800D784BE /* Utils.swift */; };
+		042B719B2B10DBF800D784BE /* QRViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 042B71992B10DBF800D784BE /* QRViewController.swift */; };
+		042B719C2B10DBF800D784BE /* QRViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 042B719A2B10DBF800D784BE /* QRViewController.xib */; };
 		04B15A702B0E2BE900C117A6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B15A6F2B0E2BE900C117A6 /* AppDelegate.swift */; };
 		04B15A722B0E2BE900C117A6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B15A712B0E2BE900C117A6 /* SceneDelegate.swift */; };
 		04B15A742B0E2BE900C117A6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B15A732B0E2BE900C117A6 /* ViewController.swift */; };
@@ -39,6 +47,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		040221822B11965F008846E2 /* ScanQRViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanQRViewController.swift; sourceTree = "<group>"; };
+		040221832B11965F008846E2 /* ScanQRViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ScanQRViewController.xib; sourceTree = "<group>"; };
+		0402218A2B11F09A008846E2 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
+		0402218C2B11F0E0008846E2 /* Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		0402218E2B11F110008846E2 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
+		042B71972B10D86800D784BE /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		042B71992B10DBF800D784BE /* QRViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRViewController.swift; sourceTree = "<group>"; };
+		042B719A2B10DBF800D784BE /* QRViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = QRViewController.xib; sourceTree = "<group>"; };
 		04B15A6C2B0E2BE900C117A6 /* ClientServer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClientServer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		04B15A6F2B0E2BE900C117A6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		04B15A712B0E2BE900C117A6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -91,6 +107,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		040221892B11F078008846E2 /* connections */ = {
+			isa = PBXGroup;
+			children = (
+				0402218A2B11F09A008846E2 /* Connection.swift */,
+				0402218C2B11F0E0008846E2 /* Client.swift */,
+				0402218E2B11F110008846E2 /* Server.swift */,
+			);
+			path = connections;
+			sourceTree = "<group>";
+		};
 		04B15A632B0E2BE900C117A6 = {
 			isa = PBXGroup;
 			children = (
@@ -116,6 +142,7 @@
 		04B15A6E2B0E2BE900C117A6 /* ClientServer */ = {
 			isa = PBXGroup;
 			children = (
+				040221892B11F078008846E2 /* connections */,
 				04B15A6F2B0E2BE900C117A6 /* AppDelegate.swift */,
 				04B15A712B0E2BE900C117A6 /* SceneDelegate.swift */,
 				04B15A732B0E2BE900C117A6 /* ViewController.swift */,
@@ -123,6 +150,11 @@
 				04B15A782B0E2BEA00C117A6 /* Assets.xcassets */,
 				04B15A7A2B0E2BEA00C117A6 /* LaunchScreen.storyboard */,
 				04B15A7D2B0E2BEA00C117A6 /* Info.plist */,
+				042B71972B10D86800D784BE /* Utils.swift */,
+				042B71992B10DBF800D784BE /* QRViewController.swift */,
+				042B719A2B10DBF800D784BE /* QRViewController.xib */,
+				040221822B11965F008846E2 /* ScanQRViewController.swift */,
+				040221832B11965F008846E2 /* ScanQRViewController.xib */,
 			);
 			path = ClientServer;
 			sourceTree = "<group>";
@@ -279,6 +311,8 @@
 				04B15A7C2B0E2BEA00C117A6 /* LaunchScreen.storyboard in Resources */,
 				04B15A792B0E2BEA00C117A6 /* Assets.xcassets in Resources */,
 				04B15A772B0E2BE900C117A6 /* Main.storyboard in Resources */,
+				040221852B11965F008846E2 /* ScanQRViewController.xib in Resources */,
+				042B719C2B10DBF800D784BE /* QRViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,8 +441,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				04B15A742B0E2BE900C117A6 /* ViewController.swift in Sources */,
+				042B719B2B10DBF800D784BE /* QRViewController.swift in Sources */,
+				040221842B11965F008846E2 /* ScanQRViewController.swift in Sources */,
 				04B15A702B0E2BE900C117A6 /* AppDelegate.swift in Sources */,
 				04B15A722B0E2BE900C117A6 /* SceneDelegate.swift in Sources */,
+				042B71982B10D86800D784BE /* Utils.swift in Sources */,
+				0402218D2B11F0E0008846E2 /* Client.swift in Sources */,
+				0402218F2B11F110008846E2 /* Server.swift in Sources */,
+				0402218B2B11F09A008846E2 /* Connection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -596,11 +636,13 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClientServer/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need the camera to scan QR code";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -629,11 +671,13 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClientServer/Info.plist;
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need the camera to scan QR code";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
