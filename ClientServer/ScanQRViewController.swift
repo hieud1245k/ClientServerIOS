@@ -50,6 +50,7 @@ class ScanQRViewController: UIViewController, AVCaptureMetadataOutputObjectsDele
                     isFirst = false
                     let value = object.stringValue
                     scanQRDelegate?.outputQRCode(value)
+                    self.dismiss(animated: true)
 
                 }
             }
@@ -62,5 +63,6 @@ class ScanQRViewController: UIViewController, AVCaptureMetadataOutputObjectsDele
     
     @IBAction func closeView(_ sender: Any) {
         print("Close camera view")
+        self.dismiss(animated: true)
     }
 }

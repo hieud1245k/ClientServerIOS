@@ -13,7 +13,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="mainVC" id="BYZ-38-t0r" customClass="ViewController" customModule="ClientServer" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="ClientServer" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ny4-4Y-dcF">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -107,6 +107,7 @@
                             <constraint firstItem="35c-gc-sUl" firstAttribute="trailing" secondItem="dJJ-5P-eme" secondAttribute="trailing" constant="32" id="szA-Rg-jcq"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="wH9-uL-C8N"/>
                     <connections>
                         <outlet property="btConnect" destination="dJJ-5P-eme" id="zGW-cC-pK2"/>
                         <outlet property="btQRCode" destination="rtp-63-8Vt" id="fYp-D6-a18"/>
@@ -119,7 +120,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="132" y="-34"/>
+            <point key="canvasLocation" x="-834" y="-35"/>
         </scene>
     </scenes>
     <resources>
