@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ScanQRViewController" customModule="ClientServer" customModuleProvider="target">
             <connections>
+                <outlet property="contentView" destination="0dE-hV-WIh" id="8z4-w0-bKm"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -27,12 +28,20 @@
                         <action selector="closeView:" destination="-1" eventType="touchUpInside" id="g7g-kr-xvg"/>
                     </connections>
                 </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0dE-hV-WIh">
+                    <rect key="frame" x="32" y="91" width="329" height="624"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="0dE-hV-WIh" secondAttribute="trailing" constant="32" id="9jS-Jf-zW7"/>
+                <constraint firstItem="0dE-hV-WIh" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="32" id="GGG-3x-AIE"/>
                 <constraint firstItem="dvq-g0-Ics" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="TH9-ib-6sH"/>
+                <constraint firstItem="dvq-g0-Ics" firstAttribute="top" secondItem="0dE-hV-WIh" secondAttribute="bottom" constant="32" id="aNg-40-Pdu"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="dvq-g0-Ics" secondAttribute="bottom" constant="32" id="pgs-Fx-d7H"/>
+                <constraint firstItem="0dE-hV-WIh" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="32" id="rAI-nj-Ksc"/>
             </constraints>
             <point key="canvasLocation" x="132" y="-11"/>
         </view>

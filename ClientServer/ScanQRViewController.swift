@@ -13,6 +13,8 @@ protocol ScanQRDelegate {
 }
 
 class ScanQRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+    @IBOutlet weak var contentView: UIView!
+    
     private var video = AVCaptureVideoPreviewLayer()
     private var isFirst = true
     
@@ -37,8 +39,10 @@ class ScanQRViewController: UIViewController, AVCaptureMetadataOutputObjectsDele
         output.metadataObjectTypes = [.qr]
         
         video = AVCaptureVideoPreviewLayer(session: session)
-        video.frame = view.layer.bounds
-        view.layer.addSublayer(video)
+        video.videoGravity = .resizeAspectFill
+        video.frame = contentView.layer.bounds
+        contentView.layer.addSublayer(video)
+        contentView.layer.contentsGravity = .resizeAspectFill
         
         session.startRunning()
     }

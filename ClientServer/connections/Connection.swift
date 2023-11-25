@@ -51,6 +51,7 @@ class Connection {
 
     private func stateDidChange(to state: NWConnection.State) {
         print("Connection stateDidChange \(state)")
+        onConnectionStateCallback(state)
         switch state {
         case .setup:
             break
@@ -60,10 +61,9 @@ class Connection {
             break
         case .ready:
             print("connection \(self.id) ready")
-            onConnectionStateCallback(state)
         case .failed(let error):
+            print("connection failed due to:  \(error)")
             self.connectionDidFail(error: error)
-            onConnectionStateCallback(state)
         case .cancelled:
             break
         default:

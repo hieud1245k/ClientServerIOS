@@ -17,6 +17,7 @@ class ViewController: UIViewController, ScanQRDelegate {
     @IBOutlet weak var lbStatus: UILabel!
     @IBOutlet weak var lbMessage: UILabel!
     @IBOutlet weak var btQRCode: UIButton!
+    @IBOutlet weak var imgQRCode: UIImageView!
     
     private var client: Client? = nil
     private var server: Server? = nil
@@ -37,13 +38,21 @@ class ViewController: UIViewController, ScanQRDelegate {
         super.viewDidLoad()
         lbMessage.numberOfLines = 1000
         lbStatus.numberOfLines = 1000
-        btQRCode.setTitle("Scan", for: .normal)
+        imgQRCode.isHidden = true
+        imgQRCode.layer.borderColor = UIColor.gray.cgColor
+        imgQRCode.layer.borderWidth = 1
+        
+        if let address = Utils.getWiFiAddress() {
+            if let qrURLImage = URL(string: address)?.qrImage(using: UIColor.black) {
+                imgQRCode.image = qrURLImage
+            }
+        }
      
         //Looks for single or multiple taps.
-         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
-
-        //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
-        //tap.cancelsTouchesInView = false
+         let tap = UITapGestureRecognizer(
+            target: self,
+            action: #selector(UIInputViewController.dismissKeyboard)
+         )
 
         view.addGestureRecognizer(tap)
     }
@@ -108,7 +117,8 @@ class ViewController: UIViewController, ScanQRDelegate {
                             self.btStart.setTitle("Send to client", for: .normal)
                             let address = Utils.getWiFiAddress()
                             self.lbStatus.text = "Start server successful!\nAddress: \(address!), port: 8080"
-                            self.btQRCode.setTitle("Open QR code", for: .normal)
+                            self.btQRCode.isHidden = true
+                            self.imgQRCode.isHidden = false
                             break
                         case .failed(let error):
                             self.lbStatus.text = "Start server failed due to: \(error.localizedDescription)"
@@ -132,17 +142,11 @@ class ViewController: UIViewController, ScanQRDelegate {
     }
     
     @IBAction func openQRCode(_ sender: Any) {
-        if (server == nil) {
-            print("Open scanner")
-            let scannerVController = ScanQRViewController(nibName: nil, bundle: nil)
-            scannerVController.scanQRDelegate = self
-            self.present(scannerVController, animated: true)
-            return
-        }
-        print("Open QR code")
-        let qrVController = QRViewController(nibName: nil, bundle: nil)
-        qrVController.address = Utils.getWiFiAddress() ?? ""
-        self.present(qrVController, animated: true)
+        print("Open scanner")
+        let scannerVController = ScanQRViewController(nibName: nil, bundle: nil)
+        scannerVController.scanQRDelegate = self
+        scannerVController.modalPresentationStyle = .fullScreen
+        self.present(scannerVController, animated: true)
     }
     
     func outputQRCode(_ value: String?) {
@@ -151,29 +155,34 @@ class ViewController: UIViewController, ScanQRDelegate {
     }
     
     private func connectToServer(address: String, port: Int32) {
-        self.client = Client(address, port, lbMessage: self.lbMessage)
-        DispatchQueue.global(qos: .background).async {
-            self.client?.connection.onConnectionStateCallback = { state in
-                DispatchQueue.main.async {
-                    if state == .ready {
-                        self.btQRCode.isHidden = true
-                        self.lbStatus.text = "Connect to server success"
-                        self.btConnect.setTitle("Stop connect to server", for: .normal)
-                        self.btStart.setTitle("Send to server", for: .normal)
-                    } else {
-                        self.reset()
-                        self.lbStatus.text = "Connect to server failed"
-                    }
-                }
-            }
-            self.client?.onStopCallBack = {
-                DispatchQueue.main.async {
+    self.client = Client(address, port, lbMessage: self.lbMessage)
+        self.client?.connection.onConnectionStateCallback = { state in
+            DispatchQueue.main.async {
+                switch state {
+                case .preparing:
+                    self.lbStatus.text = "Preparing connect..."
+                    break
+                case .ready:
+                    self.btQRCode.isHidden = true
+                    self.lbStatus.text = "Connect to server success"
+                    self.btConnect.setTitle("Stop connect to server", for: .normal)
+                    self.btStart.setTitle("Send to server", for: .normal)
+                    break
+                case .failed(_):
                     self.reset()
-                    self.lbStatus.text = "Server disconnect"
+                    self.lbStatus.text = "Connect to server failed"
+               default:
+                    break
                 }
             }
-            self.client?.start()
         }
+        self.client?.onStopCallBack = {
+            DispatchQueue.main.async {
+                self.reset()
+                self.lbStatus.text = "Server disconnect"
+            }
+        }
+        self.client?.start()
     }
     
     private func reset() {
@@ -183,13 +192,11 @@ class ViewController: UIViewController, ScanQRDelegate {
         btStart.setTitle("Start server", for: .normal)
         lbStatus.text = "Waiting a connection..."
         lbMessage.text = ""
-        self.btQRCode.isHidden = false
-        self.btQRCode.setTitle("Scan", for: .normal)
+        imgQRCode.isHidden = true
+        btQRCode.isHidden = false
     }
     
-    //Calls this function when the tap is recognized.
     @objc func dismissKeyboard() {
-        //Causes the view (or one of its embedded text fields) to resign the first responder status.
         view.endEditing(true)
     }
 }
